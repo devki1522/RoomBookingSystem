@@ -6,4 +6,5 @@ public interface BookingRepository {
     void save(Booking booking);
     List<Booking> findAll();
     List<Booking> findByRoomId(String roomId);
+    List<Room> findAllRooms();
 }

@@ -5,6 +5,8 @@ import com.booking.infrastructure.InMemoryBookingRepository;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class BookingTest {
     @Test
@@ -69,7 +71,7 @@ public class BookingTest {
         assertEquals("SUCCESS : Booking confirmed.", result1);
 
         String result2 = service.createBookingRequest(devki, lab, start1, end1, 10);
-        assertEquals("Booking already exists", result2);
+        assertEquals("REJECTED: Booking already exists. You have been added to the waitlist.", result2);
 
         System.out.println("Service test passed.");
     }
@@ -128,4 +130,55 @@ public class BookingTest {
         assertEquals(4, repo.findAll().size(), "There should be 4 individual bookings in the repository.");
         System.out.println("Test Passed : Recurring series expanded and saved correctly.");
     }
+
+    @Test
+    public void testWaitlistPlacement(){
+        BookingRepository repo = new InMemoryBookingRepository();
+        BookingService service = new BookingService(repo);
+        User user1 = new User("Alice", "Student");
+        User user2 = new User("Devki", "Student");
+        Room lab = new Room("Lab_01", 10, false);
+
+        LocalDateTime time = LocalDateTime.of(2026, 8, 1, 12, 0);
+
+        // 1. Alice books the room successfully
+        service.createBookingRequest(user1, lab, time, time.plusHours(1), 5);
+
+        // 2. Devki tries to book the SAME room/time
+        String result = service.createBookingRequest(user2, lab, time, time.plusHours(1), 5);
+
+        // 3. Assertions
+        assertTrue(result.contains("added to the waitlist"));
+        assertEquals(1, lab.getWaitlistSize());
+        assertEquals("Devki", lab.peekWaitlist().getName());
+
+        System.out.println("Test Passed: User successfully queued in waitlist.");
+    }
+
+    @Test
+public void testFindAvailableRooms() {
+    InMemoryBookingRepository repo = new InMemoryBookingRepository();
+    BookingService service = new BookingService(repo);
+
+    Room roomA = new Room("Large_Room", 50, false);
+    Room roomB = new Room("Small_Room", 5, false);
+    repo.addRoom(roomA);
+    repo.addRoom(roomB);
+
+    LocalDateTime start = LocalDateTime.of(2026, 9, 1, 10, 0);
+    LocalDateTime end = start.plusHours(1);
+
+    // 1. Search for a room for 10 people (Both should show up)
+    List<Room> available = service.findAvailableRooms(start, end, 10);
+    assertEquals(1, available.size(), "Only Large_Room should fit 10 people.");
+    assertEquals("Large_Room", available.get(0).getRoomId());
+
+    // 2. Book the Large_Room
+    User user = new User("Devki", "Student");
+    service.createBookingRequest(user, roomA, start, end, 10);
+
+    // 3. Search again for the SAME time (Large_Room should now be hidden)
+    List<Room> availableNow = service.findAvailableRooms(start, end, 10);
+    assertTrue(availableNow.isEmpty(), "No rooms should be available for 10 people now.");
+}
 }

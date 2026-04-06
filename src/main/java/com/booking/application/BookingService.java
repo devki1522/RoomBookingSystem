@@ -2,6 +2,7 @@ package com.booking.application;
 
 import com.booking.domain.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookingService {
@@ -26,16 +27,17 @@ public class BookingService {
         List<Booking> existingBookings = repository.findByRoomId(room.getRoomId());
         for (Booking existing : existingBookings) {
             if (newRequest.conflictsWith(existing)) {
-                return "REJECTED: Room is already booked for this time.";
+                room.addToWaitlist(user);
+                return "REJECTED: Booking already exists. You have been added to the waitlist.";
             }
         }
 
         repository.save(newRequest);
 
         if (newRequest.getStatus() == BookingStatus.PENDING_APPROVAL) {
-            return "SUCCESS: Booking submitted and awaiting admin approval.";
+            return "SUCCESS : Booking Submitted and awaiting Admin Approval";
         } else {
-            return "SUCCESS: Booking confirmed.";
+            return "SUCCESS : Booking confirmed.";
         }
     }
 
@@ -51,7 +53,8 @@ public class BookingService {
             List<Booking> existing = repository.findByRoomId(room.getRoomId());
             for(Booking b : existing) {
                 if (newOccurence.conflictsWith(b)) {
-                    return "REJECTED: Room is already booked for this time." + newOccurence.getStartTime().toLocalDate();
+                    room.addToWaitlist(user);
+                    return "Room is already booked for this time." + newOccurence.getStartTime().toLocalDate() + " Added to waitlist.";
                 }
             }
         }
@@ -61,4 +64,25 @@ public class BookingService {
         }
         return "SUCCESS : Created " + series.size() + " recurring bookings.";
     }
+
+    public List<Room> findAvailableRooms(LocalDateTime start, LocalDateTime end, int attendees){
+        List<Room> allRooms = repository.findAllRooms();
+
+        return allRooms.stream()
+                .filter(room -> room.getCapacity() >= attendees)
+                .filter(room -> isRoomFree(room, start, end))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    private boolean isRoomFree(Room room, LocalDateTime start, LocalDateTime end){
+        List<Booking> bookings = repository.findByRoomId(room.getRoomId());
+
+        for (Booking b: bookings){
+            if(b.getStartTime().isBefore(end) && start.isBefore(b.getEndTime())){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
