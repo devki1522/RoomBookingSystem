@@ -7,6 +7,8 @@ import com.booking.domain.Room;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.io.*;
+import java.nio.file.*;
 
 public class InMemoryBookingRepository implements BookingRepository {
     private List<Booking> database = new ArrayList<>();
@@ -36,5 +38,33 @@ public class InMemoryBookingRepository implements BookingRepository {
 
     public void addRoom(Room room){
         rooms.add(room);
+    }
+
+    public void saveRoomsToFile(){
+        try(PrintWriter writer = new PrintWriter(new FileWriter("rooms.txt"))){
+            for(Room room : rooms){
+                //Format = roomId, Capacity, Restriction
+                writer.println(room.getRoomId() + " , " + room.getCapacity() + " , " + room.isRequiresApproval());
+            }
+            System.out.println("[REQ -2.3] SUCCESS : Rooms saved to rooms.txt");
+
+        } catch(IOException ioe){
+            System.out.println("Error saving rooms: " + ioe.getMessage());
+        }
+    }
+
+    public void loadRoomsFromFile(){
+        try{
+            List<String> lines = Files.readAllLines(Paths.get("rooms.txt"));
+            rooms.clear();
+            for(String line : lines){
+                String[] parts = line.split(" , ");
+                rooms.add(new Room(parts[0], Integer.parseInt(parts[1]), Boolean.parseBoolean(parts[2])));
+
+            }
+            System.out.println("[REQ -2.3] SUCCESS : Rooms loaded from rooms.txt");
+        } catch(IOException ioe){
+            System.out.println("Error loading rooms.");
+        }
     }
 }

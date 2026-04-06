@@ -37,6 +37,10 @@ public class Room {
         waitlist.add(user);
     }
 
+    public void removeFromWaitlist(User user){
+        waitlist.remove(user);
+    }
+
     public User peekWaitlist(){
         return waitlist.peek();
     }
