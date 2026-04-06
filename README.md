@@ -1,50 +1,53 @@
-Room booking System Phase 02-03
-**Group Number -06**
-**Group Members: Devki Nandan Sharma, Pratham Rao, Nifemi**
+# CSCN72040 Term Project – Phase 2 & 3
+## Group 06
+### Group Members
+- Devki Nandan Sharma
+- Pratham Rao
+- Nifemi
 
-**Prerequisites**
-1. JAVA version 17 or higher
-2. IDE: IntelliJ IDEA
+## Project Overview
+This project is a CLI-based Room Booking System developed in Java. It demonstrates booking creation, validation, persistence, reporting, approval workflow, policy comparison, and performance evidence through a runnable `Main` program.
 
-**Execution Instructions**
-1. Open project folder in your IDE.
-2. Navigate to src/com/booking/main.java
-3. Right click on main.java and select run Main.main()
-4. The console will present a CLI menu. 
-               
-**Project Structure**
+The system was designed to support the Phase 2 and Phase 3 requirements by providing a single executable entry point and labeled outputs for each required demonstration item.
+
+## Prerequisites
+1. Java 17 or higher
+2. IntelliJ IDEA recommended
+
+## How to Run
+1. Open the project folder in IntelliJ IDEA.
+2. Make sure the project SDK is set to Java 17 or higher.
+3. Open:
+   `src/main/java/com/booking/Main.java`
+4. Right click `Main.java`
+5. Select `Run 'Main.main()'`
+6. The CLI demo menu will appear in the Run console.
+
+## Project Structure
+```text
+src/
+└── main/
+    └── java/
+        └── com/
+            └── booking/
+                ├── Main.java
+                ├── application/
+                │   └── BookingService.java
+                ├── domain/
+                │   ├── Booking.java
+                │   ├── BookingFactory.java
+                │   ├── BookingRepository.java
+                │   ├── BookingStatus.java
+                │   ├── RecurrenceRule.java
+                │   ├── Room.java
+                │   └── User.java
+                └── infrastructure/
+                    └── InMemoryBookingRepository.java
 
 src/
-
-    └── com/
-
-        └── booking/
-
-            ├── Main.java (The Entry Point)
-
-            ├── application/
-
-            │       └── BookingService.java (Business Logic)
-
-            ├── domain/
-
-            │       ├── Booking.java
-
-            │       ├── Room.java
-
-            │       ├── User.java
-
-            │       ├── BookingStatus.java (Enum)
-
-            │       ├── RecurrenceRule.java
-
-            │       └── BookingRepository.java (Interface)
-
-            └── infrastructure/
-
-                    └── InMemoryBookingRepository.java (File Persistence)
-
-**Design Patterns Used**
-1. Creational: Used BookingFactory methjod to handle complex object creations.
-2. Structural: Used BookingRepository to decouple logic from storage.
-3. State Pattern: Use BookingStatus to manage room approval workflow.
+└── test/
+    └── java/
+        └── com/
+            └── booking/
+                └── domain/
+                    └── BookingTest.java

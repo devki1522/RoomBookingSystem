@@ -1,2 +1,4 @@
 Room1 , 10 , false
 Room2 , 10 , true
+2 , 2 , true
+Room3 , 10 , true
