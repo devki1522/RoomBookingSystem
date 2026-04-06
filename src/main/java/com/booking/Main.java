@@ -66,6 +66,7 @@ public class Main {
                     for(Room r : allRooms){
                         System.out.println("ID : " + r.getRoomId() + " Capacity : " + r.getCapacity());
                     }
+                    System.out.println();
                     break;
 
                     case 2:
@@ -91,7 +92,7 @@ public class Main {
                         if (result.startsWith("SUCCESS")) {
                             bookingRepository.saveBookingsToFile();
                         }
-
+                        System.out.println();
                         break;
                         case 3:
                             System.out.println("[REQ-2.4] Query 2: Booking Status Report");
@@ -102,6 +103,7 @@ public class Main {
                             for(Booking b : bookings){
                                 System.out.println("[ " + b.getStatus() + " ] ID: " + b.getBookingId() + " | Room: " + b.getRoom().getRoomId());
                             }
+                            System.out.println();
                             break;
                 case 4:
                     System.out.println("[REQ-2.5] Lifecycle Demo: Admin Approval Portal");
@@ -120,6 +122,7 @@ public class Main {
                                     bookingRepository.saveBookingsToFile();
                                 }
                             });
+                    System.out.println();
                     break;
                                 case 5:
                                     System.out.println("add New Room:");
@@ -132,6 +135,7 @@ public class Main {
                                     bookingRepository.addRoom(new Room(newRoomId, capacity, restricted));
                                     bookingRepository.saveRoomsToFile();
                                     System.out.println("Room added and Saved to file. ");
+                                    System.out.println();
                                     break;
                 case 6:
                     System.out.println("[REQ-2.9] Performance Test");
@@ -152,6 +156,7 @@ public class Main {
                     System.out.println("Dataset size: " + allBookingsForPerf.size() + " bookings");
                     System.out.println("Search/report completed in " + durationMs + " ms");
                     System.out.println("Trade-off: In-memory search is simple and fast for small datasets, but indexed or database-based search would scale better for larger systems.");
+                    System.out.println();
                     break;
 
                 case 7:
@@ -200,6 +205,7 @@ public class Main {
                     }
 
                     System.out.println("Explanation: Standard rooms follow direct request policy, while restricted rooms follow approval-required policy.");
+                    System.out.println();
                     break;
 
                 case 8:
